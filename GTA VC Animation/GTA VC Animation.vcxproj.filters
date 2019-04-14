@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="GTAVCAnimation.cpp" />
+    <ClCompile Include="..\Input\InputManager.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Input\Utils.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Input">
+      <UniqueIdentifier>{8b692af5-ca2f-47a2-a257-c31d23c1682d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detours">
+      <UniqueIdentifier>{d27a0a00-7d7a-41a7-b953-fc95e34220b6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Input\dxguid.lib">
+      <Filter>Input</Filter>
+    </Library>
+    <Library Include="..\ms-detours\detours.lib">
+      <Filter>detours</Filter>
+    </Library>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Input\InputManager.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Input\Utils.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ms-detours\detours.h">
+      <Filter>detours</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

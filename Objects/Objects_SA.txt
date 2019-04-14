@@ -1,0 +1,92 @@
+#include "plugin.h"
+#include "InputManager.h"
+#include "CObject.h"
+#include "CWorld.h"
+#include "RenderWare.h"
+#include "CTheScripts.h"
+using namespace plugin;
+
+class Objects {
+public:
+    Objects() {
+        // Initialise your plugin here
+        if (AllocConsole())
+        {
+            freopen("CONIN$", "r", stdin);
+            freopen("CONOUT$", "w", stdout);
+            freopen("CONOUT$", "w", stderr);
+        }
+
+        Events::initGameEvent += [&]
+        {
+            std::printf("Events::initGameEvent called\n");
+            if (!theInputManager.Initialize())
+            {
+                MessageBox(0, "Direct Input Initialization Failed", "Error", MB_OK);
+                return;
+            }
+
+            theInputManager.RegisterKeyBoardCallBack(std::bind(&Objects::OnKeyPress, this,
+                std::placeholders::_1, std::placeholders::_2));
+        };
+
+        // Initialise your plugin here
+        Events::gameProcessEvent += [&]
+        {
+            theInputManager.ProcessInput();
+        };
+    };
+
+    void CEntity_UpdateRW_(CEntity * pEntity)
+    {
+        if (pEntity->m_pRwObject)
+        {
+            if (pEntity->m_matrix)
+            {
+                pEntity->m_matrix->UpdateRW(&((RwFrame*)pEntity->m_pRwObject->parent)->modelling);
+            }
+            else
+            {
+                RwMatrix theMatrix;
+                pEntity->m_placement.UpdateRwMatrix(&theMatrix);
+            }
+        }
+    }
+
+    void OnKeyPress(unsigned char key, PressState state)
+    {
+        if (state == PRESS_DOWN)
+        {
+            switch (key)
+            {
+            case DIK_1:
+            {
+                CPlayerPed* pLocalPlayer = FindPlayerPed();
+                if (pLocalPlayer)
+                {
+                    DWORD objectID = 3110;
+                    CVector position = pLocalPlayer->TransformFromObjectSpace(CVector(0.0f, 5.0f, 0.0f));
+                    CObject* pObject = CObject::Create(objectID);
+                    pObject->m_nObjectType = OBJECT_MISSION;
+                    if (position.z <= -100.0)
+                    {
+                        position.z = CWorld::FindGroundZForCoord(position.x, position.y);
+                    }
+                    position.z = pObject->GetDistanceFromCentreOfMassToBaseOfModel() + position.z;
+                    pObject->SetPosn(position.x, position.y, position.z);
+                    pObject->SetOrientation(0.0, 0.0, 0.0);
+                    CEntity_UpdateRW_(pObject);
+                    pObject->UpdateRwFrame();
+                    CTheScripts::ClearSpaceForMissionEntity(position, pObject);
+                    CWorld::Add(pObject);
+                }
+                break;
+            }
+            }
+        }
+    }
+
+
+private:
+    InputManager      theInputManager;
+} objects;
