@@ -1,5 +1,6 @@
 /*
-    IMPORTANT NOTE: Remember to place markhor.png in models folder of your GTA directory. 
+    IMPORTANT NOTE: Remember to place kings.txd in models folder of your GTA directory. 
+    Download kings txd here: https://bit.ly/2K6X9G1
 */
 #include "plugin.h"
 #include "common.h"
